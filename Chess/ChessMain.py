@@ -19,7 +19,7 @@ def loadImages():
     pieces = ["wp","wR","wN","wB","wQ","wK","bp","bR","bN","bB","bQ","bK"]
     for pi in pieces:
         # hàm p.transform.scale để scale lại tỉ lệ của hình ảnh sao cho khớp với ô vuông trong bàn cờ 
-        IMAGES[pi] = p.transform.scale(p.image.load("images/" + pi + ".png"), (SQ_SIZE, SQ_SIZE))
+        IMAGES[pi] = p.transform.scale(p.image.load("Chess/images/" + pi + ".png"), (SQ_SIZE, SQ_SIZE))
     # giờ chúng ta có thể dẫn tới hình ảnh bằng cách gọi : "IMAGES['wp']"
 
 '''
