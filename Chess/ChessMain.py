@@ -21,7 +21,7 @@ def loadImages():
     for pi in pieces:
         # hàm p.transform.scale để scale lại tỉ lệ của hình ảnh sao cho khớp với ô vuông trong bàn cờ
         IMAGES[pi] = p.transform.scale(
-            p.image.load("Chess/images/" + pi + ".png"),
+            p.image.load("Chess/assets/images/" + pi + ".png"),
             (SQ_SIZE, SQ_SIZE),
         )
     # giờ chúng ta có thể dẫn tới hình ảnh bằng cách gọi : "IMAGES['wp']"
@@ -32,8 +32,9 @@ phần chính của code. đoạn này sẽ kiểm soát đầu vào của ngư�
 """
 
 
-def main():
+def play_with_player():
     p.init()
+    p.display.set_caption("Play with Player")
     screen = p.display.set_mode((WIDTH, HEIGHT))
     clock = p.time.Clock()
     screen.fill(p.Color("white"))
@@ -222,4 +223,4 @@ def drawText(screen, text):
 
 
 if __name__ == "__main__":
-    main()
+    play_with_player()
