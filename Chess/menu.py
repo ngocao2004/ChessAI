@@ -18,7 +18,7 @@ def get_font(size):  # Returns Press-Start-2P in the desired size
     return pygame.font.Font("Chess/assets/menu/font.ttf", size)
 
 
-def play():
+def play_menu():
     while True:
         PLAY_MOUSE_POS = pygame.mouse.get_pos()
 
@@ -70,22 +70,31 @@ def play():
         pygame.display.update()
 
 
-def options():
+def guide_menu():
     while True:
         OPTIONS_MOUSE_POS = pygame.mouse.get_pos()
 
-        SCREEN.fill("white")
+        SCREEN.fill("black")
+        SCREEN.blit(BG, (0, 0))
 
-        # OPTIONS_TEXT = get_font(45).render("This is the OPTIONS screen.", True, "Black")
-        # OPTIONS_RECT = OPTIONS_TEXT.get_rect(center=(640, 260))
-        # SCREEN.blit(OPTIONS_TEXT, OPTIONS_RECT)
+        GUIDE1_TEXT = get_font(60).render("Z : Undo", True, "WHITE")
+        GUIDE1_RECT = GUIDE1_TEXT.get_rect(center=(WIDTH / 2, HEIGHT * 0.2))
+        SCREEN.blit(GUIDE1_TEXT, GUIDE1_RECT)
+
+        GUIDE2_TEXT = get_font(60).render("R : Reset", True, "WHITE")
+        GUIDE2_RECT = GUIDE2_TEXT.get_rect(center=(WIDTH / 2, HEIGHT * 0.4))
+        SCREEN.blit(GUIDE2_TEXT, GUIDE2_RECT)
+
+        GUILD3_TEXT = get_font(60).render("Esc : Pause", True, "WHITE")
+        GUIDE3_RECT = GUILD3_TEXT.get_rect(center=(WIDTH / 2, HEIGHT * 0.6))
+        SCREEN.blit(GUILD3_TEXT, GUIDE3_RECT)
 
         OPTIONS_BACK = Button.Button(
             image=None,
-            pos=(WIDTH / 2, 460),
+            pos=(WIDTH / 2, WIDTH * 0.8),
             text_input="BACK",
             font=get_font(75),
-            base_color="Black",
+            base_color="White",
             hovering_color="Green",
         )
 
@@ -99,6 +108,125 @@ def options():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if OPTIONS_BACK.checkForInput(OPTIONS_MOUSE_POS):
                     main_menu()
+
+        pygame.display.update()
+
+
+def pause_menu():
+    while True:
+        PAUSE_MOUSE_POS = pygame.mouse.get_pos()
+
+        SCREEN.fill("black")
+        SCREEN.blit(BG, (0, 0))
+
+        HOME_BUTTON = Button.Button(
+            image=None,
+            pos=(WIDTH / 2, WIDTH * 0.2),
+            text_input="HOME",
+            font=get_font(75),
+            base_color="#d7fcd4",
+            hovering_color="GREEN",
+        )
+
+        RESUME_BUTTON = Button.Button(
+            image=None,
+            pos=(WIDTH / 2, WIDTH * 0.4),
+            text_input="RESUME",
+            font=get_font(75),
+            base_color="#d7fcd4",
+            hovering_color="White",
+        )
+
+        RESTART_BACK = Button.Button(
+            image=None,
+            pos=(WIDTH / 2, WIDTH * 0.6),
+            text_input="RESTART",
+            font=get_font(75),
+            base_color="#d7fcd4",
+            hovering_color="White",
+        )
+
+        QUIT_BUTTON = Button.Button(
+            image=None,  # image=pygame.image.load("Chess/assets/menu/Quit Rect.png"),
+            pos=(WIDTH * 0.5, HEIGHT * 0.8),
+            text_input="QUIT",
+            font=get_font(75),
+            base_color="WHITE",
+            hovering_color="RED",
+        )
+
+        for button in [RESUME_BUTTON, RESTART_BACK, HOME_BUTTON, QUIT_BUTTON]:
+            button.changeColor(PAUSE_MOUSE_POS)
+            button.update(SCREEN)
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if RESUME_BUTTON.checkForInput(PAUSE_MOUSE_POS):
+                    continue
+                if RESTART_BACK.checkForInput(PAUSE_MOUSE_POS):
+                    continue
+                if HOME_BUTTON.checkForInput(PAUSE_MOUSE_POS):
+                    main_menu()
+                if QUIT_BUTTON.checkForInput(PAUSE_MOUSE_POS):
+                    pygame.quit()
+                    sys.exit()
+
+        pygame.display.update()
+
+
+def end_menu():
+    while True:
+        END_MOUSE_POS = pygame.mouse.get_pos()
+
+        SCREEN.fill("black")
+        SCREEN.blit(BG, (0, 0))
+
+        HOME_BUTTON = Button.Button(
+            image=None,
+            pos=(WIDTH / 2, WIDTH * 0.3),
+            text_input="HOME",
+            font=get_font(75),
+            base_color="#d7fcd4",
+            hovering_color="GREEN",
+        )
+
+        RESTART_BACK = Button.Button(
+            image=None,
+            pos=(WIDTH / 2, WIDTH * 0.5),
+            text_input="RESTART",
+            font=get_font(75),
+            base_color="#d7fcd4",
+            hovering_color="White",
+        )
+
+        QUIT_BUTTON = Button.Button(
+            image=None,  # image=pygame.image.load("Chess/assets/menu/Quit Rect.png"),
+            pos=(WIDTH * 0.5, HEIGHT * 0.7),
+            text_input="QUIT",
+            font=get_font(75),
+            base_color="#d7fcd4",
+            hovering_color="RED",
+        )
+
+        for button in [HOME_BUTTON, RESTART_BACK, QUIT_BUTTON]:
+            button.changeColor(END_MOUSE_POS)
+            button.update(SCREEN)
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if HOME_BUTTON.checkForInput(END_MOUSE_POS):
+                    main_menu()
+                if RESTART_BACK.checkForInput(END_MOUSE_POS):
+                    continue
+                if QUIT_BUTTON.checkForInput(END_MOUSE_POS):
+                    pygame.quit()
+                    sys.exit()
 
         pygame.display.update()
 
@@ -120,10 +248,10 @@ def main_menu():
             base_color="#d7fcd4",
             hovering_color="White",
         )
-        OPTIONS_BUTTON = Button.Button(
+        GUIDE_BUTTON = Button.Button(
             image=None,  # image=pygame.image.load("Chess/assets/menu/Options Rect.png"),
             pos=(WIDTH * 0.5, HEIGHT * 0.6),
-            text_input="OPTIONS",
+            text_input="GUIDE",
             font=get_font(75),
             base_color="#d7fcd4",
             hovering_color="White",
@@ -134,12 +262,12 @@ def main_menu():
             text_input="QUIT",
             font=get_font(75),
             base_color="#d7fcd4",
-            hovering_color="White",
+            hovering_color="RED",
         )
 
         SCREEN.blit(MENU_TEXT, MENU_RECT)
 
-        for button in [PLAY_BUTTON, OPTIONS_BUTTON, QUIT_BUTTON]:
+        for button in [PLAY_BUTTON, GUIDE_BUTTON, QUIT_BUTTON]:
             button.changeColor(MENU_MOUSE_POS)
             button.update(SCREEN)
 
@@ -149,9 +277,9 @@ def main_menu():
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if PLAY_BUTTON.checkForInput(MENU_MOUSE_POS):
-                    play()
-                if OPTIONS_BUTTON.checkForInput(MENU_MOUSE_POS):
-                    options()
+                    play_menu()
+                if GUIDE_BUTTON.checkForInput(MENU_MOUSE_POS):
+                    guide_menu()
                 if QUIT_BUTTON.checkForInput(MENU_MOUSE_POS):
                     pygame.quit()
                     sys.exit()
@@ -160,4 +288,4 @@ def main_menu():
 
 
 if __name__ == "__main__":
-    main_menu()
+    end_menu()
