@@ -2,13 +2,14 @@
 this is our main drive file. it will be responsible for handling user input and displaying the current gamestate object
 """
 
-import pygame as p
+import pygame
 import ChessEngine
+import Menu
 
 WIDTH = HEIGHT = 768
 DIMENSION = 8  # chiều của bàn cờ là 8x8
 SQ_SIZE = HEIGHT // DIMENSION  # kich cỡ của một ô vuông trong bàn cờ
-MAX_FPS = 15  # cho animation
+MAX_FPS = 15  # for animation
 IMAGES = {}
 
 """
@@ -19,9 +20,9 @@ khởi tạo một từ điển hình ảnh toàn cục. sẽ được gọi m�
 def loadImages():
     pieces = ["wp", "wR", "wN", "wB", "wQ", "wK", "bp", "bR", "bN", "bB", "bQ", "bK"]
     for pi in pieces:
-        # hàm p.transform.scale để scale lại tỉ lệ của hình ảnh sao cho khớp với ô vuông trong bàn cờ
-        IMAGES[pi] = p.transform.scale(
-            p.image.load("Chess/assets/images/" + pi + ".png"),
+        # hàm pygame.transform.scale để scale lại tỉ lệ của hình ảnh sao cho khớp với ô vuông trong bàn cờ
+        IMAGES[pi] = pygame.transform.scale(
+            pygame.image.load("Chess/assets/images/" + pi + ".png"),
             (SQ_SIZE, SQ_SIZE),
         )
     # giờ chúng ta có thể dẫn tới hình ảnh bằng cách gọi : "IMAGES['wp']"
@@ -33,11 +34,11 @@ phần chính của code. đoạn này sẽ kiểm soát đầu vào của ngư�
 
 
 def play_with_player():
-    p.init()
-    p.display.set_caption("Play with Player")
-    screen = p.display.set_mode((WIDTH, HEIGHT))
-    clock = p.time.Clock()
-    screen.fill(p.Color("white"))
+    pygame.init()
+    pygame.display.set_caption("Play with Player")
+    screen = pygame.display.set_mode((WIDTH, HEIGHT))
+    clock = pygame.time.Clock()
+    screen.fill(pygame.Color("white"))
     # khởi tạo một game state ban đầu
     gs = ChessEngine.GameState()
     validMoves = gs.getValidMoves()
@@ -49,12 +50,14 @@ def play_with_player():
     playerClicks = []  # keep track of player clicks (two tuple [(6,4), (4,4)])
     gameOver = False
     while running:
-        for e in p.event.get():
-            if e.type == p.QUIT:
+        for e in pygame.event.get():
+            if e.type == pygame.QUIT:
                 running = False
-            elif e.type == p.MOUSEBUTTONDOWN:
+                Menu.main_menu()
+                break
+            elif e.type == pygame.MOUSEBUTTONDOWN:
                 if not gameOver:
-                    location = p.mouse.get_pos()  # trả về một cặp toạ độ x y
+                    location = pygame.mouse.get_pos()  # trả về một cặp toạ độ x y
                     col = location[0] // SQ_SIZE
                     row = location[1] // SQ_SIZE
                     if sqSelected == (row, col):  # hành động chọn 2 lần vào một ô vuông
@@ -80,12 +83,12 @@ def play_with_player():
                             playerClicks = [sqSelected]
 
             # key handler
-            elif e.type == p.KEYDOWN:
-                if e.key == p.K_z:  # undo
+            elif e.type == pygame.KEYDOWN:
+                if e.key == pygame.K_z:  # undo
                     gs.undoMove()
                     moveMade = True
                     animate = False
-                if e.key == p.K_r:
+                if e.key == pygame.K_r:
                     gs = ChessEngine.GameState()
                     validMoves = gs.getValidMoves()
                     sqSelected = ()
@@ -113,7 +116,7 @@ def play_with_player():
             drawText(screen, "Stalemate")
 
         clock.tick(MAX_FPS)
-        p.display.flip()
+        pygame.display.flip()
 
 
 """
@@ -127,13 +130,13 @@ def highlightSquares(screen, gs, validMoves, sqSelected):
         if gs.board[r][c][0] == (
             "w" if gs.whiteToMove else "b"
         ):  # sqSelected là một quân cờ có thể di chuyển đc
-            s = p.Surface((SQ_SIZE, SQ_SIZE))
+            s = pygame.Surface((SQ_SIZE, SQ_SIZE))
             s.set_alpha(
                 100
             )  # mức độ trong suốt : = 0: trong suốt hoàn toàn, = 255 : đục ngầu
-            s.fill(p.Color("blue"))
+            s.fill(pygame.Color("blue"))
             screen.blit(s, (c * SQ_SIZE, r * SQ_SIZE))
-            s.fill(p.Color("yellow"))
+            s.fill(pygame.Color("yellow"))
             # làm nổi bật các ô mà quân cờ có thể di chuyển đến
             for move in validMoves:
                 if move.startRow == r and move.startCol == c:
@@ -156,12 +159,12 @@ vẽ các hình vuông trên bàn cờ
 
 def drawBoard(screen):
     global colors
-    colors = [p.Color("white"), p.Color("gray")]
+    colors = [pygame.Color("white"), pygame.Color("gray")]
     for r in range(DIMENSION):
         for c in range(DIMENSION):
             color = colors[(r + c) % 2]
-            p.draw.rect(
-                screen, color, p.Rect(c * SQ_SIZE, r * SQ_SIZE, SQ_SIZE, SQ_SIZE)
+            pygame.draw.rect(
+                screen, color, pygame.Rect(c * SQ_SIZE, r * SQ_SIZE, SQ_SIZE, SQ_SIZE)
             )
 
 
@@ -172,7 +175,8 @@ def drawPiece(screen, board):
             piece = board[r][c]
             if piece != "--":
                 screen.blit(
-                    IMAGES[piece], p.Rect(c * SQ_SIZE, r * SQ_SIZE, SQ_SIZE, SQ_SIZE)
+                    IMAGES[piece],
+                    pygame.Rect(c * SQ_SIZE, r * SQ_SIZE, SQ_SIZE, SQ_SIZE),
                 )
 
 
@@ -196,31 +200,28 @@ def animateMove(move, screen, board, clock):
         drawPiece(screen, board)
 
         color = colors[(move.endRow + move.endCol) % 2]
-        endSquare = p.Rect(
+        endSquare = pygame.Rect(
             move.endCol * SQ_SIZE, move.endRow * SQ_SIZE, SQ_SIZE, SQ_SIZE
         )
-        p.draw.rect(screen, color, endSquare)
+        pygame.draw.rect(screen, color, endSquare)
 
         if move.pieceCaptured != "--":
             screen.blit(IMAGES[move.pieceCaptured], endSquare)
 
         screen.blit(
-            IMAGES[move.pieceMoved], p.Rect(c * SQ_SIZE, r * SQ_SIZE, SQ_SIZE, SQ_SIZE)
+            IMAGES[move.pieceMoved],
+            pygame.Rect(c * SQ_SIZE, r * SQ_SIZE, SQ_SIZE, SQ_SIZE),
         )
-        p.display.flip()
+        pygame.display.flip()
         clock.tick(60)
 
 
 def drawText(screen, text):
-    font = p.font.SysFont("Helvitca", 32, True, False)
-    textObject = font.render(text, 0, p.Color("Black"))
-    textLocation = p.Rect(0, 0, WIDTH, HEIGHT).move(
+    font = pygame.font.SysFont("Helvitca", 32, True, False)
+    textObject = font.render(text, 0, pygame.Color("Black"))
+    textLocation = pygame.Rect(0, 0, WIDTH, HEIGHT).move(
         WIDTH / 2 - textObject.get_width() / 2, HEIGHT / 2 - textObject.get_height() / 2
     )
     screen.blit(textObject, textLocation)
-    textObject = font.render(text, 0, p.Color("Black"))
+    textObject = font.render(text, 0, pygame.Color("Black"))
     screen.blit(textObject, textLocation.move(2, 2))
-
-
-if __name__ == "__main__":
-    play_with_player()
