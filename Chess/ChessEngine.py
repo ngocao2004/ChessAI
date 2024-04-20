@@ -40,7 +40,7 @@ class GameState():
 
         # toạ độ của ô có thể thực hiện bắt tốt qua đường
         self.enpassantPossilbe = () # mới bắt đầu trận đấu ko có ô nào thoả mãn nên để là rỗng
-
+        self.enpassantPossilbeLog = [self.enpassantPossilbe]
         # khởi tạo 1 trạng thái có thể nhập thành không của bàn cơ hiện tại
         self.currentCastlingRight = CastleRight(True, True, True, True) # khi mới bắt đầu, có 4 trường hợp có thể nhập thành được
 
@@ -75,7 +75,8 @@ class GameState():
         else:
             # nếu thực hiện nước đi khác sau đó, nước đi bắt tốt qua đường sẽ không còn
             self.enpassantPossilbe = ()
-            
+        self.enpassantPossilbeLog.append(self.enpassantPossilbe)
+
         # nếu nước đi đó là nước nhập thành
         if move.isCastleMove:
             if move.endCol - move.startCol == 2: # nhập thành ở hướng bên phải vua
@@ -112,11 +113,9 @@ class GameState():
             if move.isEnpassantMove:
                 self.board[move.endRow][move.endCol] = '--'
                 self.board[move.startRow][move.endCol] = move.pieceCaptured
-                self.enpassantPossilbe = (move.endRow, move.endCol)
-
-            # undo lại một nước đi tạo ra nước bắt tốt qua đường
-            if move.pieceMoved[1] == 'p' and abs(move.startRow - move.endRow) == 2:
-                self.enpassantPossilbe = ()
+            
+            self.enpassantPossilbeLog.pop()
+            self.enpassantPossilbe = self.enpassantPossilbeLog[-1]
 
             # undo lại trạng thái nhập thành
             self.castleRightLog.pop() # xoá trạng thái hiện tại do chúng ta undo
@@ -131,9 +130,12 @@ class GameState():
                     self.board[move.endRow][move.endCol-2] = self.board[move.endRow][move.endCol +1] # di chuyển quân xe
                     self.board[move.endRow][move.endCol+1] = '--' # xoá con xe cũ
             
+            self.checkMate = False
+            self.staleMate = False
 
      # cập nhập quyền nhập thành - khi nước đi là nước đi của xe hoặc của vua        
     def updateCastleRight(self,move):
+        # kiểm tra xem quân cờ di chuyển có phải là quân xe hay quân vua hay không
         if move.pieceMoved =='wK':
             self.currentCastlingRight.wks = False
             self.currentCastlingRight.wqs = False
@@ -152,6 +154,21 @@ class GameState():
                     self.currentCastlingRight.bqs = False
                 elif move.startCol == 7:
                     self.currentCastlingRight.bks = False
+
+        # nếu quân bị bắt là quân xe
+        if move.pieceCaptured == 'wR':
+            if move.endRow == 7:
+                if move.endCol == 0:
+                    self.currentCastlingRight.wqs = False
+                elif move.endCol == 7:
+                    self.currentCastlingRight.wks = False
+        elif move.pieceCaptured == 'bR':
+            if move.endRow == 0:
+                if move.endCol == 0:
+                    self.currentCastlingRight.bqs = False
+                elif move.endCol == 7:
+                    self.currentCastlingRight.bks = False
+
 
     """
     các nước đi cần phải xem xét có ảnh hưởng đến vua không
@@ -387,6 +404,7 @@ class Move():
 
         self.isCastleMove = isCastleMove    
 
+        self.isCapture = self.pieceCaptured != '--'
         self. moveID = self.startRow * 1000 + self.startCol * 100 + self.endRow * 10 + self.endCol
 
     def __eq__(self, other):
@@ -399,3 +417,22 @@ class Move():
 
     def getRankFile(self,r ,c):    
         return self.colsToFiles[c] + self.rowsToRanks[r]
+    
+
+    def __str__(self):
+        # castle move
+        if self.isCastleMove:
+            return "O-O" if self.endCol == 6 else "O-O-O"
+        
+        endSquare = self.getRankFile(self.endRow, self.endCol)
+
+        if self.pieceMoved[1] == 'p':
+            if self.isCapture:
+                return self.colsToFiles[self.startCol] + "x" + endSquare
+            else:
+                return 'p' + endSquare    
+       
+        moveString = self.pieceMoved[1]
+        if self.isCapture:
+            moveString += 'x'
+        return moveString + endSquare

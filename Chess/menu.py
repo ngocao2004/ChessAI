@@ -4,7 +4,8 @@ import ChessMain
 
 pygame.init()
 
-WIDTH = HEIGHT = 768
+WIDTH = 768 
+HEIGHT = 768
 SCREEN = pygame.display.set_mode((HEIGHT, WIDTH))
 pygame.display.set_caption("Menu")
 
@@ -64,9 +65,9 @@ def play():
                 if PLAY_BACK.checkForInput(PLAY_MOUSE_POS):
                     main_menu()
                 if PvE_BUTTON.checkForInput(PLAY_MOUSE_POS):
-                    ChessMain.play_with_player()
+                    ChessMain.play_with_player(False)
                 if PvP_BUTTON.checkForInput(PLAY_MOUSE_POS):
-                    ChessMain.play_with_player()
+                    ChessMain.play_with_player(True)
         pygame.display.update()
 
 
