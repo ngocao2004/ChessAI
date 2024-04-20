@@ -5,11 +5,13 @@ this is our main drive file. it will be responsible for handling user input and 
 import pygame
 import ChessEngine
 import Menu
+import Config
 
-WIDTH = HEIGHT = 768
-DIMENSION = 8  # chiều của bàn cờ là 8x8
-SQ_SIZE = HEIGHT // DIMENSION  # kich cỡ của một ô vuông trong bàn cờ
-MAX_FPS = 15  # for animation
+WIDTH = Config.Config.WIDTH
+HEIGHT = Config.Config.HEIGHT
+DIMENSION = Config.Config.DIMENSION  # chiều của bàn cờ là 8x8
+SQ_SIZE = Config.Config.SQ_SIZE  # kich cỡ của một ô vuông trong bàn cờ
+MAX_FPS = Config.Config.MAX_FPS  # for animation
 IMAGES = {}
 
 """

@@ -1,15 +1,17 @@
 import pygame, sys
 import Button
 import ChessMain
+import Config
 
 pygame.init()
 
-WIDTH = HEIGHT = 768
+WIDTH = Config.Config.WIDTH
+HEIGHT = Config.Config.HEIGHT
 SCREEN = pygame.display.set_mode((HEIGHT, WIDTH))
 pygame.display.set_caption("Menu")
 
 BG = pygame.transform.scale(
-    pygame.image.load("Chess/assets/menu/Background(1).png"),
+    pygame.image.load("Chess/assets/menu/Background.png"),
     (WIDTH, HEIGHT),
 )
 
