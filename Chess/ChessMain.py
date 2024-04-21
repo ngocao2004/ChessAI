@@ -1,19 +1,23 @@
 import pygame
 import ChessEngine
-import menu
+import Menu
 import AIEngine
+import Config
 
-WIDTH = HEIGHT = 768
-MOVE_LOG_W = 350
-MOVE_LOG_H = HEIGHT
-DIMENSION = 8  # chiều của bàn cờ là 8x8
-SQ_SIZE = HEIGHT // DIMENSION  # kich cỡ của một ô vuông trong bàn cờ
-MAX_FPS = 15  # for animation
+WIDTH = Config.Config.WIDTH
+HEIGHT = Config.Config.HEIGHT
+MOVE_LOG_W = Config.Config.MOVE_LOG_W
+MOVE_LOG_H = Config.Config.MOVE_LOG_H
+DIMENSION = Config.Config.DIMENSION  # chiều của bàn cờ là 8x8
+SQ_SIZE = Config.Config.SQ_SIZE  # kich cỡ của một ô vuông trong bàn cờ
+MAX_FPS = Config.Config.MAX_FPS  # for animation
 IMAGES = {}
 
 """
 khởi tạo một từ điển hình ảnh toàn cục. sẽ được gọi một lần duy nhât trong main
 """
+
+
 def loadImages():
     pieces = ["wp", "wR", "wN", "wB", "wQ", "wK", "bp", "bR", "bN", "bB", "bQ", "bK"]
     for pi in pieces:
@@ -28,7 +32,9 @@ def loadImages():
 """
 phần chính của code. đoạn này sẽ kiểm soát đầu vào của người dùng và cập nhập đồ hoạ
 """
-def play_with_player(AI):
+
+
+def play(AI):
     pygame.init()
     pygame.display.set_caption("Play with Player")
     screen = pygame.display.set_mode((WIDTH + MOVE_LOG_W, HEIGHT))
@@ -46,20 +52,21 @@ def play_with_player(AI):
     playerClicks = []  # keep track of player clicks (two tuple [(6,4), (4,4)])
     gameOver = False
     playerOne = True  # nếu người chơi đang chơi màu trắng, biến này sẽ là true. Nếu AI đang chơi màu trắng, biến này là False
-    playerTwo = AI 
+    playerTwo = AI
     while running:
         humanTurn = (gs.whiteToMove and playerOne) or (not gs.whiteToMove and playerTwo)
         for e in pygame.event.get():
             if e.type == pygame.QUIT:
                 running = False
-                menu.main_menu()
                 break
             elif e.type == pygame.MOUSEBUTTONDOWN:
                 if not gameOver and humanTurn:
                     location = pygame.mouse.get_pos()  # trả về một cặp toạ độ x y
                     col = location[0] // SQ_SIZE
                     row = location[1] // SQ_SIZE
-                    if sqSelected == (row, col) or col >= 8:  # hành động chọn 2 lần vào một ô vuông
+                    if (
+                        sqSelected == (row, col) or col >= 8
+                    ):  # hành động chọn 2 lần vào một ô vuông
                         # hoàn tác lại các giá trị
                         sqSelected = ()
                         playerClicks = []
@@ -95,11 +102,12 @@ def play_with_player(AI):
                     moveMade = False
                     animate = False
                     gameOver = False
-                if e.key ==pygame.K_m:
+                if e.key == pygame.K_m:
                     running = False
-        #AI move finder
+                    Menu.main_menu()
+        # AI move finder
         if not gameOver and not humanTurn:
-            AImove = AIEngine.findBestMove(gs,validMoves)
+            AImove = AIEngine.findBestMove(gs, validMoves)
             if AImove is None:
                 AImove = AIEngine.findRandomMove(validMoves)
             gs.makeMove(AImove)
@@ -116,14 +124,20 @@ def play_with_player(AI):
 
         if gs.checkMate:
             gameOver = True
+            running = False
             if gs.whiteToMove:
-                drawText(screen, " Black wins by checkmate")
+                end_text = "Black wins!"
+                # drawText(screen, " Black wins by checkmate")
             else:
-                drawText(screen, " White wins by checkmate")
+                end_text = "White wins!"
+                # drawText(screen, " White wins by checkmate")
+            Menu.end_menu(end_text)
         elif gs.staleMate:
             gameOver = True
-            drawText(screen, "Stalemate")
-
+            running = False
+            end_text = "Draw!"
+            # drawText(screen, "Stalemate")
+            Menu.end_menu(end_text)
         clock.tick(MAX_FPS)
         pygame.display.flip()
 
@@ -131,6 +145,8 @@ def play_with_player(AI):
 """
 chịu trách nhiệm vẽ các quân cờ của trạng thái hiện tại
 """
+
+
 def highlightSquares(screen, gs, validMoves, sqSelected):
     if sqSelected != ():
         r, c = sqSelected
@@ -163,6 +179,8 @@ def drawGameState(screen, gs, validMoves, sqSelected, moveLogFont):
 """
 vẽ các hình vuông trên bàn cờ
 """
+
+
 def drawBoard(screen):
     global colors
     colors = [pygame.Color("white"), pygame.Color("gray")]
@@ -185,31 +203,32 @@ def drawPiece(screen, board):
                     pygame.Rect(c * SQ_SIZE, r * SQ_SIZE, SQ_SIZE, SQ_SIZE),
                 )
 
+
 # vẽ lịch sử cách nước đi
-def drawMoveLog(screen, gs,font):
+def drawMoveLog(screen, gs, font):
     moveLogRect = pygame.Rect(WIDTH, 0, MOVE_LOG_W, MOVE_LOG_H)
-    pygame.draw.rect(screen,pygame.Color("Black"), moveLogRect)
+    pygame.draw.rect(screen, pygame.Color("Black"), moveLogRect)
     moveLog = gs.moveLog
     moveTexts = []
-    for i in range(0, len(moveLog),2):
-        moveString = str(i//2 + 1) + ". " + str(moveLog[i]) + " "
+    for i in range(0, len(moveLog), 2):
+        moveString = str(i // 2 + 1) + ". " + str(moveLog[i]) + " "
         if i + 1 < len(moveLog):
-            moveString += str(moveLog[i+1]) + "  "
-        moveTexts.append(moveString) 
-    movePerRow = 3    
+            moveString += str(moveLog[i + 1]) + "  "
+        moveTexts.append(moveString)
+    movePerRow = 3
     padding = 5
     lineSpacing = 2
     textY = padding
-    for i in range(0,len(moveTexts), movePerRow):
+    for i in range(0, len(moveTexts), movePerRow):
         text = ""
         for j in range(movePerRow):
             if i + j < len(moveTexts):
-                text += moveTexts[i+j]
+                text += moveTexts[i + j]
         textObject = font.render(text, True, pygame.Color("White"))
         textLocation = moveLogRect.move(padding, textY)
         screen.blit(textObject, textLocation)
         textY += textObject.get_height() + lineSpacing
- 
+
 
 # tạo ra hiệu ứng cho nước đi
 def animateMove(move, screen, board, clock):
@@ -238,8 +257,12 @@ def animateMove(move, screen, board, clock):
 
         if move.pieceCaptured != "--":
             if move.isEnpassantMove:
-                enPassantRow = move.endRow + 1 if move.pieceCaptured[0] == 'b' else move.endRow - 1
-                endSquare = pygame.Rect(move.endCol * SQ_SIZE, enPassantRow * SQ_SIZE, SQ_SIZE, SQ_SIZE)
+                enPassantRow = (
+                    move.endRow + 1 if move.pieceCaptured[0] == "b" else move.endRow - 1
+                )
+                endSquare = pygame.Rect(
+                    move.endCol * SQ_SIZE, enPassantRow * SQ_SIZE, SQ_SIZE, SQ_SIZE
+                )
             screen.blit(IMAGES[move.pieceCaptured], endSquare)
 
         screen.blit(
