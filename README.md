@@ -1,5 +1,7 @@
 # Thông tin dự án
 
+## Mô tả
+
 ## Khóa học
 
 Cơ sở trí tuệ nhân tạo (2324II_AIT2004_1)
@@ -9,7 +11,7 @@ Cơ sở trí tuệ nhân tạo (2324II_AIT2004_1)
 | Họ và tên     | Mã sinh viên | Khóa             | Github                                  |
 | ------------- | ------------ | ---------------- | --------------------------------------- |
 | Trần An Thắng | 22022525     | QH-2022-I/CQ-AI2 | [angWindy](https://github.com/angWindy) |
-|               |              | QH-2022-I/CQ-AI2 |                                         |
+| Lê Trung Hiếu | 22022576     | QH-2022-I/CQ-AI1 | [hieu7404](https://github.com/hieu7404) |
 |               |              | QH-2022-I/CQ-AI2 |                                         |
 |               |              | QH-2022-I/CQ-AI2 |                                         |
 
