@@ -1,3 +1,4 @@
+import sys
 import pygame
 import ChessEngine
 import Menu
@@ -54,10 +55,14 @@ def play(AI):
     playerOne = True  # nếu người chơi đang chơi màu trắng, biến này sẽ là true. Nếu AI đang chơi màu trắng, biến này là False
     playerTwo = AI
     while running:
-        humanTurn = (gs.whiteToMove and playerOne) or (not gs.whiteToMove and playerTwo)
+        humanTurn = (gs.whiteToMove and playerOne) or (
+            not gs.whiteToMove and not playerTwo
+        )
         for e in pygame.event.get():
             if e.type == pygame.QUIT:
                 running = False
+                pygame.quit()
+                sys.exit()
                 break
             elif e.type == pygame.MOUSEBUTTONDOWN:
                 if not gameOver and humanTurn:
