@@ -4,6 +4,7 @@ import ChessEngine
 import Menu
 import AIEngine
 import Config
+import time
 
 WIDTH = Config.Config.WIDTH
 HEIGHT = Config.Config.HEIGHT
@@ -13,7 +14,7 @@ DIMENSION = Config.Config.DIMENSION  # chiều của bàn cờ là 8x8
 SQ_SIZE = Config.Config.SQ_SIZE  # kich cỡ của một ô vuông trong bàn cờ
 MAX_FPS = Config.Config.MAX_FPS  # for animation
 IMAGES = {}
-
+TIME_WHILE_END = 2  # đợi màn hình hiển thị khi end game (seconds)
 """
 khởi tạo một từ điển hình ảnh toàn cục. sẽ được gọi một lần duy nhât trong main
 """
@@ -127,6 +128,7 @@ def play(AI):
 
         drawGameState(screen, gs, validMoves, sqSelected, moveLogFont)
 
+        end_text = None
         if gs.checkMate:
             gameOver = True
             running = False
@@ -136,15 +138,21 @@ def play(AI):
             else:
                 end_text = "White wins!"
                 # drawText(screen, " White wins by checkmate")
-            Menu.end_menu(end_text)
         elif gs.staleMate:
             gameOver = True
             running = False
             end_text = "Draw!"
             # drawText(screen, "Stalemate")
-            Menu.end_menu(end_text)
+
         clock.tick(MAX_FPS)
         pygame.display.flip()
+
+        if gameOver:
+            start_time = time.time()
+            while True:
+                if time.time() - start_time > TIME_WHILE_END:
+                    break
+            Menu.end_menu(end_text)
 
 
 """
