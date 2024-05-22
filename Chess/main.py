@@ -1,4 +1,4 @@
-import menu
+import Menu
 
 if __name__ == "__main__":
-    menu.main_menu()
+    Menu.main_menu()
