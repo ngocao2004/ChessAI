@@ -26,7 +26,7 @@ Vai trò của các file như sau:
 
 # Cài đặt
 ```bash
-git clone https://github.com/angWindy/deep_learning_chess.git
+git clone https://github.com/angWindy/ChessAI.git
 pip install -r requirements.txt
 python Chess/main.py
 ```
