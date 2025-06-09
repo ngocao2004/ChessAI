@@ -25,7 +25,7 @@ def loadImages():
     for pi in pieces:
         # hàm pygame.transform.scale để scale lại tỉ lệ của hình ảnh sao cho khớp với ô vuông trong bàn cờ
         IMAGES[pi] = pygame.transform.scale(
-            pygame.image.load("Chess/assets/images/" + pi + ".png"),
+            pygame.image.load("C:/Users/GIGABYTE/ChessAI/Chess/assets/images/" + pi + ".png"),
             (SQ_SIZE, SQ_SIZE),
         )
     # giờ chúng ta có thể dẫn tới hình ảnh bằng cách gọi : "IMAGES['wp']"
