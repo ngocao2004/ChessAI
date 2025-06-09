@@ -1,15 +1,13 @@
-## Khóa học
 
-Cơ sở trí tuệ nhân tạo (2324II_AIT2004_1)
 
 ## Thông tin nhóm
 
-| Họ và tên            | Mã sinh viên | Khóa             | Github                                       |
-| -------------------- | ------------ | ---------------- | ---------------------------------------------|
-| Trần An Thắng        | 22022525     | QH-2022-I/CQ-AI2 | [angWindy](https://github.com/angWindy)      |
-| Đỗ Quang Dũng        | 22022561     | QH-2022-I/CQ-AI2 | [UETER2226](https://github.com/UETER2226)    |
-| Lê Trung Hiếu        | 22022576     | QH-2022-I/CQ-AI1 | [hieu7404](https://github.com/hieu7404)      |
-| Nguyễn Lâm Tùng Bách | 22022640     | QH-2022-I/CQ-AI2 | [lamtungbach](https://github.com/lamtungbach)|
+| Họ và tên            | Mã sinh viên | 
+| -------------------- | ------------ | 
+| Ngô Văn Cao          | 20225793     |
+| Vương văn Đăng       | 20225800     |
+| Lê Minh Quang        | 20225912     | 
+| Phùng Quang Khải     | 20225639     | 
 
 # Thông tin dự án
 Dự án cờ vua sử dụng thuật toán Negamax cùng cắt tỉa Alpha Beta
@@ -24,9 +22,5 @@ Vai trò của các file như sau:
 - Button: Lớp đại diện cho các nút trong giao diện người dùng, xử lý việc hiển thị và kiểm tra các sự kiện chuột.
 - Config: Chứa các cấu hình và thông số kỹ thuật như kích thước màn hình, màu sắc, và các cài đặt khác.
 
-# Cài đặt
-```bash
-git clone https://github.com/angWindy/ChessAI.git
-pip install -r requirements.txt
-python Chess/main.py
-```
+
+
