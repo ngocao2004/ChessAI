@@ -1,166 +1,169 @@
 import random
+import time
 import ChessEngine as CE
-pieceScore ={"K":0, "Q":10, "R":5, "B":3, "N":3, "p":1}
 
-knightScores = [[1 ,1 ,1 ,1 ,1 ,1 ,1 ,1],
-                [1 ,2 ,2 ,2 ,2 ,2 ,2 ,1],
-                [1 ,2 ,3 ,3 ,3 ,3 ,2 ,1],
-                [1 ,2 ,3 ,4 ,4 ,3 ,2 ,1],
-                [1 ,2 ,3 ,4 ,4 ,3 ,2 ,1],
-                [1 ,2 ,3 ,3 ,3 ,3 ,2 ,1],
-                [1 ,2 ,2 ,2 ,2 ,2 ,2 ,1],
-                [1 ,1 ,1 ,1 ,1 ,1 ,1 ,1]]
+# Các bảng điểm
+pieceScore = {"K": 0, "Q": 10, "R": 5, "B": 3, "N": 3, "p": 1}
 
-bishopScores = [[4 ,3 ,2 ,1 ,1 ,2 ,3 ,4],
-                [3 ,4 ,3 ,2 ,2 ,3 ,4 ,3],
-                [2 ,3 ,4 ,3 ,3 ,4 ,3 ,2],
-                [1 ,2 ,3 ,4 ,4 ,3 ,2 ,1],
-                [1 ,2 ,3 ,4 ,4 ,3 ,2 ,1],
-                [2 ,3 ,4 ,3 ,3 ,4 ,3 ,2],
-                [3 ,4 ,3 ,2 ,2 ,3 ,4 ,3],
-                [4 ,3 ,2 ,1 ,1 ,2 ,3 ,4]]
+knightScores = [[1, 1, 1, 1, 1, 1, 1, 1],
+                [1, 2, 2, 2, 2, 2, 2, 1],
+                [1, 2, 3, 3, 3, 3, 2, 1],
+                [1, 2, 3, 4, 4, 3, 2, 1],
+                [1, 2, 3, 4, 4, 3, 2, 1],
+                [1, 2, 3, 3, 3, 3, 2, 1],
+                [1, 2, 2, 2, 2, 2, 2, 1],
+                [1, 1, 1, 1, 1, 1, 1, 1]]
 
-queenScores =  [[1 ,1 ,1 ,3 ,1 ,1 ,1 ,1],
-                [1 ,2 ,3 ,3 ,3 ,1 ,1 ,1],
-                [1 ,4 ,3 ,3 ,3 ,4 ,2 ,1],
-                [1 ,2 ,3 ,3 ,3 ,2 ,2 ,1],
-                [1 ,2 ,3 ,3 ,3 ,2 ,2 ,1],
-                [1 ,4 ,3 ,3 ,3 ,4 ,2 ,1],
-                [1 ,1 ,2 ,3 ,3 ,1 ,1 ,1],
-                [1 ,1 ,1 ,3 ,1 ,1 ,1 ,1]]
+bishopScores = [[4, 3, 2, 1, 1, 2, 3, 4],
+                [3, 4, 3, 2, 2, 3, 4, 3],
+                [2, 3, 4, 3, 3, 4, 3, 2],
+                [1, 2, 3, 4, 4, 3, 2, 1],
+                [1, 2, 3, 4, 4, 3, 2, 1],
+                [2, 3, 4, 3, 3, 4, 3, 2],
+                [3, 4, 3, 2, 2, 3, 4, 3],
+                [4, 3, 2, 1, 1, 2, 3, 4]]
 
-rookScores =  [ [4 ,3 ,4 ,4 ,4 ,4 ,3 ,4],
-                [4 ,4 ,4 ,4 ,4 ,4 ,4 ,4],
-                [1 ,1 ,2 ,3 ,3 ,2 ,1 ,1],
-                [1 ,2 ,3 ,4 ,4 ,3 ,2 ,1],
-                [1 ,2 ,3 ,4 ,4 ,3 ,2 ,1],
-                [1 ,1 ,2 ,3 ,3 ,2 ,1 ,1],
-                [4 ,4 ,4 ,4 ,4 ,4 ,4 ,4],
-                [4 ,3 ,4 ,4 ,4 ,4 ,3 ,4]]
+queenScores = [[1, 1, 1, 3, 1, 1, 1, 1],
+               [1, 2, 3, 3, 3, 1, 1, 1],
+               [1, 4, 3, 3, 3, 4, 2, 1],
+               [1, 2, 3, 3, 3, 2, 2, 1],
+               [1, 2, 3, 3, 3, 2, 2, 1],
+               [1, 4, 3, 3, 3, 4, 2, 1],
+               [1, 1, 2, 3, 3, 1, 1, 1],
+               [1, 1, 1, 3, 1, 1, 1, 1]]
 
-whitePawnScores = [ [8 ,8 ,8 ,8 ,8 ,8 ,8 ,8],
-                    [8 ,8 ,8 ,8 ,8 ,8 ,8 ,8],
-                    [5 ,6 ,6 ,7 ,7 ,6 ,6 ,5],
-                    [2 ,3 ,3 ,5 ,5 ,3 ,3 ,2],
-                    [1 ,2 ,3 ,4 ,4 ,3 ,2 ,1],
-                    [1 ,1 ,2 ,3 ,3 ,2 ,1 ,1],
-                    [1 ,1 ,1 ,0 ,0 ,1 ,1 ,1],
-                    [0 ,0 ,0 ,0 ,0 ,0 ,0 ,0]]
+rookScores = [[4, 3, 4, 4, 4, 4, 3, 4],
+              [4, 4, 4, 4, 4, 4, 4, 4],
+              [1, 1, 2, 3, 3, 2, 1, 1],
+              [1, 2, 3, 4, 4, 3, 2, 1],
+              [1, 2, 3, 4, 4, 3, 2, 1],
+              [1, 1, 2, 3, 3, 2, 1, 1],
+              [4, 4, 4, 4, 4, 4, 4, 4],
+              [4, 3, 4, 4, 4, 4, 3, 4]]
 
-blackPawnScores = [ [0 ,0 ,0 ,0 ,0 ,0 ,0 ,0],
-                    [1 ,1 ,1 ,0 ,0 ,1 ,1 ,1],
-                    [1 ,1 ,2 ,3 ,3 ,2 ,1 ,1],
-                    [1 ,2 ,3 ,4 ,4 ,3 ,2 ,1],
-                    [2 ,3 ,3 ,5 ,5 ,3 ,3 ,2],
-                    [5 ,6 ,6 ,7 ,7 ,6 ,6 ,5],
-                    [8 ,8 ,8 ,8 ,8 ,8 ,8 ,8],
-                    [8 ,8 ,8 ,8 ,8 ,8 ,8 ,8]]
+whitePawnScores = [[8, 8, 8, 8, 8, 8, 8, 8],
+                   [8, 8, 8, 8, 8, 8, 8, 8],
+                   [5, 6, 6, 7, 7, 6, 6, 5],
+                   [2, 3, 3, 5, 5, 3, 3, 2],
+                   [1, 2, 3, 4, 4, 3, 2, 1],
+                   [1, 1, 2, 3, 3, 2, 1, 1],
+                   [1, 1, 1, 0, 0, 1, 1, 1],
+                   [0, 0, 0, 0, 0, 0, 0, 0]]
 
-piecePositionScores = {"N" : knightScores, "Q": queenScores, "B":bishopScores, "R":rookScores, 
-                       "bp":blackPawnScores, "wp":whitePawnScores}
+blackPawnScores = [[0, 0, 0, 0, 0, 0, 0, 0],
+                   [1, 1, 1, 0, 0, 1, 1, 1],
+                   [1, 1, 2, 3, 3, 2, 1, 1],
+                   [1, 2, 3, 4, 4, 3, 2, 1],
+                   [2, 3, 3, 5, 5, 3, 3, 2],
+                   [5, 6, 6, 7, 7, 6, 6, 5],
+                   [8, 8, 8, 8, 8, 8, 8, 8],
+                   [8, 8, 8, 8, 8, 8, 8, 8]]
+
+piecePositionScores = {
+    "N": knightScores,
+    "Q": queenScores,
+    "B": bishopScores,
+    "R": rookScores,
+    "bp": blackPawnScores,
+    "wp": whitePawnScores
+}
 
 CHECKMATE = 1000
 STALEMATE = 0
 DEPTH = 3
 
+# Tìm nước đi ngẫu nhiên
 def findRandomMove(validMoves):
-    return validMoves[random.randint(0, len(validMoves)-1)]
+    return validMoves[random.randint(0, len(validMoves) - 1)]
 
+# Tìm nước đi tốt nhất (có đo thời gian)
 def findBestMove(gs, validMoves):
+    import time
     global nextMove
-    tempCastleRight = CE.CastleRight(gs.currentCastlingRight.wks,gs.currentCastlingRight.bks,
-                                           gs.currentCastlingRight.wqs,gs.currentCastlingRight.bqs)
-    nextMove = None
-    validMoves = moveOrdering(gs,validMoves)
-    findMoveNegaMaxAlphaBeta(gs, validMoves, DEPTH, -CHECKMATE,  CHECKMATE, 1 if gs.whiteToMove else -1)
-    gs.currentCastlingRight = tempCastleRight
-    return nextMove      
+    start_time = time.time()
 
-def findMoveNegaMaxAlphaBeta(gs, validMoves, depth,alpha, beta, turnMultiplier):
+    tempCastleRight = CE.CastleRight(gs.currentCastlingRight.wks, gs.currentCastlingRight.bks,
+                                      gs.currentCastlingRight.wqs, gs.currentCastlingRight.bqs)
+    nextMove = None
+    validMoves = moveOrdering(gs, validMoves)
+    findMoveNegaMaxAlphaBeta(gs, validMoves, DEPTH, -CHECKMATE, CHECKMATE, 1 if gs.whiteToMove else -1)
+    gs.currentCastlingRight = tempCastleRight
+
+    end_time = time.time()
+    duration = end_time - start_time
+    print(f"⏱ Thời gian suy nghĩ nước đi: {duration:.4f} giây")
+
+    return nextMove
+
+# Tìm nước đi bằng thuật toán NegaMax có alpha-beta pruning
+def findMoveNegaMaxAlphaBeta(gs, validMoves, depth, alpha, beta, turnMultiplier):
     global nextMove
     if depth == 0:
         return turnMultiplier * scoreBoard(gs)
+
     maxScore = -CHECKMATE
     for move in validMoves:
         gs.makeMove(move)
-        nextMoves = gs.getValidMoves()
-        nextMoves = moveOrdering(gs,nextMoves)
-        score = -findMoveNegaMaxAlphaBeta(gs, nextMoves, depth - 1,-beta, -alpha, -turnMultiplier)
+        nextMoves = moveOrdering(gs, gs.getValidMoves())
+        score = -findMoveNegaMaxAlphaBeta(gs, nextMoves, depth - 1, -beta, -alpha, -turnMultiplier)
+        gs.undoMove()
+
         if score > maxScore:
             maxScore = score
             if depth == DEPTH:
                 nextMove = move
-        gs.undoMove()
-        if maxScore> alpha :
+        if maxScore > alpha:
             alpha = maxScore
         if alpha >= beta:
             break
     return maxScore
 
+# Chấm điểm bàn cờ
 def scoreBoard(gs):
     if gs.checkMate:
-        if gs.whiteToMove:
-            return -CHECKMATE # bên đen thắng
-        else:
-            return CHECKMATE # bên trắng thắng
+        return -CHECKMATE if gs.whiteToMove else CHECKMATE
+    if gs.staleMate:
+        return STALEMATE
+
     score = 0
-    for row in range(len(gs.board)):
-        for col in range(len(gs.board[row])):
-            square = gs.board[row][col]
-            if square != '--':
+    for r in range(8):
+        for c in range(8):
+            piece = gs.board[r][c]
+            if piece != "--":
                 piecePositionScore = 0
-                if square[1] != "K":
-                    if square[1] == 'p':
-                        piecePositionScore = piecePositionScores[square][row][col]
-                    else:    
-                        piecePositionScore = piecePositionScores[square[1]][row][col]
-                if square[0] == 'w':
-                    score += pieceScore[square[1]] + piecePositionScore * 0.1
-                elif square[0] == 'b':
-                    score -= (pieceScore[square[1]] + piecePositionScore * 0.1)
+                if piece[1] != "K":
+                    if piece[1] == 'p':
+                        piecePositionScore = piecePositionScores[piece][r][c]
+                    else:
+                        piecePositionScore = piecePositionScores[piece[1]][r][c]
+                if piece[0] == 'w':
+                    score += pieceScore[piece[1]] + 0.1 * piecePositionScore
+                else:
+                    score -= pieceScore[piece[1]] + 0.1 * piecePositionScore
     return score
 
+# Sắp xếp nước đi theo độ ưu tiên
 def moveOrdering(gs, validMoves):
-    # Tạo một danh sách để lưu trữ điểm số cho mỗi nước đi
     moveScores = []
-    winningCapture = 0.8
-    losingCapture = 0.2
-
-    # Tính toán điểm số cho mỗi nước đi
     for move in validMoves:
         gs.makeMove(move)
-        # Điểm số cơ bản dựa trên bảng điểm hiện tại
         score = scoreBoard(gs)
         gs.undoMove()
-
-        # Thêm điểm thưởng hoặc phạt dựa trên các yếu tố khác
         if move.isCapture:
-        
             score += pieceScore[move.pieceCaptured[1]]
         if move.isPawnPromotion:
-            # Thêm điểm nếu là nước thăng cấp
-            score += 1  # Giả sử thăng cấp được 1 điểm thưởng
-
+            score += 1
         moveScores.append(score)
 
-    # Sắp xếp các nước đi dựa trên điểm số, từ cao xuống thấp
     sortedMoves = [move for _, move in sorted(zip(moveScores, validMoves), key=lambda pair: pair[0], reverse=True)]
-
     return sortedMoves
 
+# Kiểm tra nước đi có an toàn không
 def is_move_safe(gs, move):
-    """
-    Kiểm tra xem sau khi thực hiện nước đi, quân cờ có an toàn không.
-    """
-    gs.makeMove(move)  # Thực hiện nước đi
-    opponent_moves = gs.getValidMoves()  # Lấy tất cả nước đi hợp lệ của đối thủ
-    gs.undoMove()  # Hoàn tác nước đi để không thay đổi trạng thái bàn cờ
-
+    gs.makeMove(move)
+    opponent_moves = gs.getValidMoves()
+    gs.undoMove()
     for opp_move in opponent_moves:
         if opp_move.endRow == move.endRow and opp_move.endCol == move.endCol:
-            return False  # Nếu có nước đi của đối thủ ăn được quân cờ tại vị trí mới, nước đi không an toàn
-
-    return True  # Nếu không có nước đi nào của đối thủ ăn được quân cờ, nước đi an toàn
-
-       
-
+            return False
+    return True
