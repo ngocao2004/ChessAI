@@ -76,47 +76,6 @@ DEPTH = 3
 def findRandomMove(validMoves):
     return validMoves[random.randint(0, len(validMoves) - 1)]
 
-# Tìm nước đi tốt nhất (có đo thời gian)
-def findBestMove(gs, validMoves):
-    import time
-    global nextMove
-    start_time = time.time()
-
-    tempCastleRight = CE.CastleRight(gs.currentCastlingRight.wks, gs.currentCastlingRight.bks,
-                                      gs.currentCastlingRight.wqs, gs.currentCastlingRight.bqs)
-    nextMove = None
-    validMoves = moveOrdering(gs, validMoves)
-    findMoveNegaMaxAlphaBeta(gs, validMoves, DEPTH, -CHECKMATE, CHECKMATE, 1 if gs.whiteToMove else -1)
-    gs.currentCastlingRight = tempCastleRight
-
-    end_time = time.time()
-    duration = end_time - start_time
-    print(f"⏱ Thời gian suy nghĩ nước đi: {duration:.4f} giây")
-
-    return nextMove
-
-# Tìm nước đi bằng thuật toán NegaMax có alpha-beta pruning
-def findMoveNegaMaxAlphaBeta(gs, validMoves, depth, alpha, beta, turnMultiplier):
-    global nextMove
-    if depth == 0:
-        return turnMultiplier * scoreBoard(gs)
-
-    maxScore = -CHECKMATE
-    for move in validMoves:
-        gs.makeMove(move)
-        nextMoves = moveOrdering(gs, gs.getValidMoves())
-        score = -findMoveNegaMaxAlphaBeta(gs, nextMoves, depth - 1, -beta, -alpha, -turnMultiplier)
-        gs.undoMove()
-
-        if score > maxScore:
-            maxScore = score
-            if depth == DEPTH:
-                nextMove = move
-        if maxScore > alpha:
-            alpha = maxScore
-        if alpha >= beta:
-            break
-    return maxScore
 
 # Chấm điểm bàn cờ
 def scoreBoard(gs):
@@ -141,22 +100,6 @@ def scoreBoard(gs):
                 else:
                     score -= pieceScore[piece[1]] + 0.1 * piecePositionScore
     return score
-
-# Sắp xếp nước đi theo độ ưu tiên
-def moveOrdering(gs, validMoves):
-    moveScores = []
-    for move in validMoves:
-        gs.makeMove(move)
-        score = scoreBoard(gs)
-        gs.undoMove()
-        if move.isCapture:
-            score += pieceScore[move.pieceCaptured[1]]
-        if move.isPawnPromotion:
-            score += 1
-        moveScores.append(score)
-
-    sortedMoves = [move for _, move in sorted(zip(moveScores, validMoves), key=lambda pair: pair[0], reverse=True)]
-    return sortedMoves
 
 # Kiểm tra nước đi có an toàn không
 def is_move_safe(gs, move):
